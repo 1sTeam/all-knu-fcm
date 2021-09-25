@@ -1,6 +1,6 @@
 package com.allknu.fcm.kafka;
 
-import com.allknu.fcm.kafka.dto.FCMRequestMessage;
+import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class MessageConsumer {
 
     @KafkaListener(topics = "fcm", groupId = "all-knu-fcm", containerFactory = "fcmRequestMessageListener")
-    public void consume(@Payload FCMRequestMessage message, @Headers MessageHeaders headers) throws IOException {
+    public void consume(@Payload FCMWebMessage message, @Headers MessageHeaders headers) throws IOException {
         System.out.println(String.format("Consumed message : %s", message.getBody()));
     }
 }

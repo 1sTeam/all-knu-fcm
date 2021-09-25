@@ -1,6 +1,6 @@
 package com.allknu.fcm.config;
 
-import com.allknu.fcm.kafka.dto.FCMRequestMessage;
+import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -36,9 +36,9 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, FCMRequestMessage> FCMRequestMessageConsumerFactory() {
+    public ConsumerFactory<String, FCMWebMessage> FCMRequestMessageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        JsonDeserializer<FCMRequestMessage> deserializer = new JsonDeserializer<>(FCMRequestMessage.class);
+        JsonDeserializer<FCMWebMessage> deserializer = new JsonDeserializer<>(FCMWebMessage.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -56,8 +56,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, FCMRequestMessage> fcmRequestMessageListener() {
-        ConcurrentKafkaListenerContainerFactory<String, FCMRequestMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> fcmRequestMessageListener() {
+        ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(FCMRequestMessageConsumerFactory());
         return factory;
     }
