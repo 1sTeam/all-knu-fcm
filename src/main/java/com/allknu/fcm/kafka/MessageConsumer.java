@@ -1,5 +1,7 @@
 package com.allknu.fcm.kafka;
 
+import com.allknu.fcm.core.types.SubscribeType;
+import com.allknu.fcm.kafka.dto.FCMSubscribeMessage;
 import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import com.allknu.fcm.utils.FCMUtil;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -11,6 +13,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +27,19 @@ public class MessageConsumer {
 
         try {
             fcmUtil.sendFCMToTopics(message);
+        }catch (FirebaseMessagingException firebaseMessagingException) {
+            System.out.println(firebaseMessagingException);
+        }
+    }
+    @KafkaListener(topics = "fcmSubscribe", groupId = "all-knu-fcm", containerFactory = "fcmRequestSubscribeMessageListener")
+    public void consume(@Payload FCMSubscribeMessage message, @Headers MessageHeaders headers) throws IOException {
+        System.out.println(String.format("Consumed message : %s", message.getSubscribes().get(1)));
+
+        try {
+            List<SubscribeType> topics = message.getSubscribes();
+            for (SubscribeType topic : topics) {
+                fcmUtil.subscribeTopic(Arrays.asList(message.getToken()), topic.toString()); // 반복문으로 토픽 구독
+            }
         }catch (FirebaseMessagingException firebaseMessagingException) {
             System.out.println(firebaseMessagingException);
         }
