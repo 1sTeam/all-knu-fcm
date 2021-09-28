@@ -1,5 +1,6 @@
 package com.allknu.fcm.config;
 
+import com.allknu.fcm.kafka.dto.FCMSubscribeMessage;
 import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -34,6 +35,13 @@ public class KafkaConsumerConfig {
                 .replicas(1)
                 .build();
     }
+    @Bean
+    public NewTopic fcmRequestSubscribeTopic() {
+        return TopicBuilder.name("fcmSubscribe")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 
     @Bean
     public ConsumerFactory<String, FCMWebMessage> FCMRequestMessageConsumerFactory() {
@@ -56,9 +64,36 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, FCMSubscribeMessage> FCMRequestSubscribeMessageConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        JsonDeserializer<FCMSubscribeMessage> deserializer = new JsonDeserializer<>(FCMSubscribeMessage.class);
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(true);
+        //deserializer.addTrustedPackages("com.example.entity.Foo") // Adding Foo to our trusted packages
+
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        return new DefaultKafkaConsumerFactory<>(
+                props,
+                new StringDeserializer(),
+                deserializer);
+    }
+
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> fcmRequestMessageListener() {
         ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(FCMRequestMessageConsumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, FCMSubscribeMessage> fcmRequestSubscribeMessageListener() {
+        ConcurrentKafkaListenerContainerFactory<String, FCMSubscribeMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(FCMRequestSubscribeMessageConsumerFactory());
         return factory;
     }
 }

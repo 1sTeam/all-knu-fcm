@@ -47,6 +47,21 @@ public class FCMUtilTests {
         //then
 
     }
+    @DisplayName("구독 여러번 테스트")
+    @Test
+    void subscribeTopicsTest() {
+        //given
+        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<SubscribeType> topics = Arrays.asList(SubscribeType.CAREER, SubscribeType.SOFTWARE);
+        //when
+        try {
+            for(int i = 0 ; i < topics.size() ; i++) {
+                fcmUtil.subscribeTopic(tokens, topics.get(i).toString());
+            }
+        }catch (FirebaseMessagingException firebaseMessagingException) {
+            System.out.println(firebaseMessagingException);
+        }
+    }
     @DisplayName("메시지 주제 전송 테스트")
     @Test
     void sendFCMToTopicsTest() {
