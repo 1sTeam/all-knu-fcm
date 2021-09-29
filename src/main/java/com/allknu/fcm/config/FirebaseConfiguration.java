@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Configuration
 public class FirebaseConfiguration {
@@ -20,10 +21,20 @@ public class FirebaseConfiguration {
         Resource resource = new ClassPathResource("secrets/firebase/all-knu-firebase-adminsdk.json");
         FileInputStream fis = new FileInputStream(resource.getFile());
 
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(fis))
-                .build();
-        firebaseApp = FirebaseApp.initializeApp(options);
+        List<FirebaseApp> apps = FirebaseApp.getApps();
+        //FirebaseApp name [DEFAULT] already exists! 해결
+        if(apps != null && !apps.isEmpty()) {
+            for(FirebaseApp app : apps){
+                if(app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+                    firebaseApp = app;
+                }
+            }
+        } else {
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(fis))
+                    .build();
+            firebaseApp = FirebaseApp.initializeApp(options);
+        }
         return firebaseApp;
     }
 }
