@@ -33,7 +33,7 @@ public class MessageConsumer {
     }
     @KafkaListener(topics = "fcmSubscribe", groupId = "all-knu-fcm", containerFactory = "fcmRequestSubscribeMessageListener")
     public void consume(@Payload FCMSubscribeMessage message, @Headers MessageHeaders headers) throws IOException {
-        System.out.println(String.format("Consumed message : %s", message.getSubscribes().get(1)));
+        System.out.println(String.format("Consumed message : %s", message.getToken()));
 
         try {
             List<SubscribeType> topics = message.getSubscribes();
