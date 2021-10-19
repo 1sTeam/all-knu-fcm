@@ -1,15 +1,32 @@
 package com.allknu.fcm.utils;
 
+import com.allknu.fcm.core.types.SubscribeType;
 import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import com.google.firebase.messaging.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 
 @Component
 public class FCMUtil {
+    //unsubscribe from all topic
+    public void unsubscribeFromAllTopics(List<String> tokens) {
+        //해당 토큰들의 모든 구독을 취소한다.
+        EnumSet.allOf(SubscribeType.class)
+                .forEach(type -> {
+                    try {
+                        TopicManagementResponse response = FirebaseMessaging.getInstance().unsubscribeFromTopic(tokens, type.toString());
+                        System.out.println(response.getSuccessCount() + " tokens were unsubscribed successfully");
+                    } catch (FirebaseMessagingException e) {
+                        System.out.println("구독 해지 실패");
+                        e.printStackTrace();
+                    }
+                });
+    }
+
     //토큰들을 주제에 구독하는 메서드
     public TopicManagementResponse subscribeTopic(List<String> tokens, String topic) throws FirebaseMessagingException {
         // These registration tokens come from the client FCM SDKs.
