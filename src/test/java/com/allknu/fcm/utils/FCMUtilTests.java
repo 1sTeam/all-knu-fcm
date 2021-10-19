@@ -83,4 +83,30 @@ public class FCMUtilTests {
         //then
 
     }
+
+    @DisplayName("구독 해지 테스트")
+    @Test
+    void unsubscribeFromAllTopicsTest() {
+        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        fcmUtil.unsubscribeFromAllTopics(tokens);
+    }
+
+    @DisplayName("구독 및 해지 테스트")
+    @Test
+    void subscribeAndUnsubscribeFromAllTopicsTest() {
+        //given
+        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<SubscribeType> topics = Arrays.asList(SubscribeType.CAREER, SubscribeType.SOFTWARE);
+        try {
+            for(int i = 0 ; i < topics.size() ; i++) {
+                fcmUtil.subscribeTopic(tokens, topics.get(i).toString());
+            }
+        }catch (FirebaseMessagingException firebaseMessagingException) {
+            System.out.println(firebaseMessagingException);
+            firebaseMessagingException.printStackTrace();
+        }
+        //when
+        fcmUtil.unsubscribeFromAllTopics(tokens);
+        //then
+    }
 }
