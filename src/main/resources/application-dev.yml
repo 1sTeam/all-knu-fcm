@@ -1,6 +1,6 @@
 spring:
   kafka:
-      consumer:
-        bootstrap-servers: kafka:9092
-        group-id: all-knu-fcm
-        auto-offset-reset: earliest
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: all-knu-fcm
+      auto-offset-reset: earliest

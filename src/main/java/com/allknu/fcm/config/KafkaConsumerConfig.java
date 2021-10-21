@@ -23,7 +23,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
-    @Value("${spring.kafka.consumer.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String brokers;
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String offsetReset;
