@@ -2,6 +2,7 @@ package com.allknu.fcm.core.types;
 
 
 public enum SubscribeType {
+    EXCEPTION, // 예외
     //부서
     COUNSEL, // 마음나눔센터
     CTL, // 교수학습지원센터
