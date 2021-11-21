@@ -39,8 +39,10 @@ public class MessageConsumer {
             fcmUtil.unsubscribeFromAllTopics(Arrays.asList(message.getToken())); // 구독 전에 기존 모든 구독을 해지한다.
 
             List<SubscribeType> topics = message.getSubscribes();
-            for (SubscribeType topic : topics) {
-                fcmUtil.subscribeTopic(Arrays.asList(message.getToken()), topic.toString()); // 반복문으로 토픽 구독
+            if(topics != null) {
+                for (SubscribeType topic : topics) {
+                    fcmUtil.subscribeTopic(Arrays.asList(message.getToken()), topic.toString()); // 반복문으로 토픽 구독
+                }
             }
         }catch (FirebaseMessagingException firebaseMessagingException) {
             System.out.println(firebaseMessagingException);
