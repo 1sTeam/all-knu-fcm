@@ -27,3 +27,4 @@
 ```bash
 docker run -e "SPRING_PROFILES_ACTIVE=local" -d -p 8080:8080 -t all-knu-fcm
 ```
+![포스터 (2)](https://user-images.githubusercontent.com/35598710/146747200-db85fa02-699d-4654-9805-2802298c02d6.png)
