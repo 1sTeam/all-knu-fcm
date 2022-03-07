@@ -6,23 +6,27 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
-@ActiveProfiles("local")
+@ActiveProfiles("test")
+@TestPropertySource("classpath:/secrets/test-secrets.properties")
 public class FCMUtilTests {
     @Autowired
     private FCMUtil fcmUtil;
+    @Value("${fcm.token}")
+    private String targetToken;
 
     @DisplayName("FCM 메시지 전송 테스트")
     @Test
     void sendToTokenFCMTest() {
         //given
-        String targetToken = "feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF";
         //when
         try {
             fcmUtil.sendToOneToken(targetToken,"hello", "world!","https://naver.com");
@@ -36,7 +40,7 @@ public class FCMUtilTests {
     @Test
     void subscribeTopicTest() {
         //given
-        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<String> tokens = Arrays.asList(targetToken);
 
         //when
         try {
@@ -51,7 +55,7 @@ public class FCMUtilTests {
     @Test
     void subscribeTopicsTest() {
         //given
-        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<String> tokens = Arrays.asList(targetToken);
         List<SubscribeType> topics = Arrays.asList(SubscribeType.CAREER, SubscribeType.SOFTWARE);
         //when
         try {
@@ -87,7 +91,7 @@ public class FCMUtilTests {
     @DisplayName("구독 해지 테스트")
     @Test
     void unsubscribeFromAllTopicsTest() {
-        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<String> tokens = Arrays.asList(targetToken);
         fcmUtil.unsubscribeFromAllTopics(tokens);
     }
 
@@ -95,7 +99,7 @@ public class FCMUtilTests {
     @Test
     void subscribeAndUnsubscribeFromAllTopicsTest() {
         //given
-        List<String> tokens = Arrays.asList("feelz-2ZH-kiOMNHF9dLC0:APA91bEHgfbHDp5l0n3OMlFcdb2yazuPnaPuTXwUPUOkzc2KxAqZJU8mbh5D4Rfiy9tRim-WfsYKdZ6BT-UVxV9a4gtreWpygJiYG_b6gCrAMZ9HiXYckQdXKWpNXU9zyxsrpN9Xo_lF");
+        List<String> tokens = Arrays.asList(targetToken);
         List<SubscribeType> topics = Arrays.asList(SubscribeType.CAREER, SubscribeType.SOFTWARE);
         try {
             for(int i = 0 ; i < topics.size() ; i++) {
