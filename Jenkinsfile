@@ -80,7 +80,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'docker run --name $CONTAINER_NAME -e "SPRING_PROFILES_ACTIVE=$PROFILE" -m="700M" --net $DOCKER_NETWORK -d -t $IMAGE_NAME'
+                sh 'docker run --name $CONTAINER_NAME -e "SPRING_PROFILES_ACTIVE=$PROFILE" -m="900M" --net $DOCKER_NETWORK -d -t $IMAGE_NAME'
             }
 
             post {
