@@ -1,7 +1,11 @@
 package com.allknu.fcm.utils;
 
+import com.allknu.fcm.core.types.AndroidPriority;
+import com.allknu.fcm.core.types.ApnsPriority;
+import com.allknu.fcm.core.types.ApnsPushType;
 import com.allknu.fcm.core.types.SubscribeType;
 import com.allknu.fcm.kafka.dto.FCMWebMessage;
+import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +33,7 @@ public class FCMUtilTests {
         //given
         //when
         try {
-            fcmUtil.sendToOneToken(targetToken,"hello", "world!","https://naver.com");
+            fcmUtil.sendToOneToken(targetToken,"hello", "world!","https://naver.com", ApnsPushType.BACKGROUND, ApnsPriority.FIVE, AndroidPriority.HIGH);
         }catch (FirebaseMessagingException firebaseMessagingException) {
             System.out.println(firebaseMessagingException);
         }
@@ -79,7 +83,7 @@ public class FCMUtilTests {
 
         //when
         try {
-            fcmUtil.sendFCMToTopics(fcmWebMessage);
+            fcmUtil.sendFCMToTopics(fcmWebMessage.getSubscribeTypes(), fcmWebMessage.getTitle(), fcmWebMessage.getBody(), fcmWebMessage.getClickLink(), ApnsPushType.BACKGROUND, ApnsPriority.FIVE, AndroidPriority.HIGH);
         }catch (FirebaseMessagingException firebaseMessagingException) {
             System.out.println(firebaseMessagingException);
         }
