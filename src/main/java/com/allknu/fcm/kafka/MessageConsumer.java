@@ -1,8 +1,8 @@
 package com.allknu.fcm.kafka;
 
 import com.allknu.fcm.core.types.SubscribeType;
+import com.allknu.fcm.kafka.dto.FCMMobileMessage;
 import com.allknu.fcm.kafka.dto.FCMSubscribeMessage;
-import com.allknu.fcm.kafka.dto.FCMWebMessage;
 import com.allknu.fcm.utils.FCMUtil;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,17 @@ public class MessageConsumer {
     private final FCMUtil fcmUtil;
 
     @KafkaListener(topics = "fcm", groupId = "all-knu-fcm", containerFactory = "fcmRequestMessageListener")
-    public void consume(@Payload FCMWebMessage message, @Headers MessageHeaders headers) throws IOException {
+    public void consume(@Payload FCMMobileMessage message, @Headers MessageHeaders headers) throws IOException {
         System.out.println(String.format("Consumed message : %s", message.getBody()));
 
         try {
-            fcmUtil.sendFCMToTopics(message);
+            fcmUtil.sendFCMToTopics(message.getSubscribeTypes(),
+                    message.getTitle(),
+                    message.getBody(),
+                    message.getClickLink(),
+                    message.getApnsPushType(),
+                    message.getApnsPriority(),
+                    message.getAndroidPriority());
         }catch (FirebaseMessagingException firebaseMessagingException) {
             System.out.println(firebaseMessagingException);
         }
