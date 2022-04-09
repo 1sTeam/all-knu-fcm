@@ -21,7 +21,7 @@ import java.util.List;
 public class MessageConsumer {
     private final FCMUtil fcmUtil;
 
-    @KafkaListener(topics = "fcm", groupId = "all-knu-fcm", containerFactory = "fcmRequestMessageListener")
+    @KafkaListener(topics = "fcm", groupId = "all-knu-fcm", containerFactory = "fcmMobileMessageListener")
     public void consume(@Payload FCMMobileMessage message, @Headers MessageHeaders headers) throws IOException {
         System.out.println(String.format("Consumed message : %s", message.getBody()));
 
