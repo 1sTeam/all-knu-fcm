@@ -62,6 +62,7 @@ public class FCMUtil {
         if(apnsPushType == null) apnsPushType = ApnsPushType.BACKGROUND; // 디폴트
         // ios 푸시타입 설정
         ApnsConfig.Builder apnsConfigBuilder = ApnsConfig.builder()
+                .setAps(Aps.builder().build())
                 .putHeader("apns-push-type", apnsPushType.getValue());
         // ios 우선순위 설정
         if(apnsPriority != null) {
@@ -117,6 +118,7 @@ public class FCMUtil {
         if(apnsPushType == null) apnsPushType = ApnsPushType.BACKGROUND; // 디폴트
         // ios 푸시타입 설정
         ApnsConfig.Builder apnsConfigBuilder = ApnsConfig.builder()
+                .setAps(Aps.builder().build())
                 .putHeader("apns-push-type", apnsPushType.getValue());
         // ios 우선순위 설정
         if(apnsPriority != null) {
