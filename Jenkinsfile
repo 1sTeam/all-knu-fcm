@@ -25,6 +25,10 @@ pipeline {
                 success {
                     echo 'success init in pipeline'
                 }
+                failure {
+                    error 'error init in pipeline'
+                    slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
+                }
             }
         }
         stage('clone project') {
@@ -40,6 +44,7 @@ pipeline {
                 }
                 failure {
                     error 'fail clone project' // exit pipeline
+                    slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
                 }
             }
         }
@@ -60,6 +65,7 @@ pipeline {
 		}
 		failure {
 		   error 'fail create secret file'
+		   slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
 		}
 	   }
 	}
@@ -75,6 +81,7 @@ pipeline {
                 }
                 failure {
                     error 'fail dockerizing by maven' // exit pipeline
+                    slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
                 }
             }
         }
@@ -86,9 +93,11 @@ pipeline {
             post {
                 success {
                     echo 'success deploying all knu fcm spring project'
+                    slackSend (channel: '#jenkins-notification', color: '#00FF00', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 성공")
                 }
                 failure {
                     error 'fail deploying all knu fcm spring project' // exit pipeline
+                    slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
                 }
             }
         }
