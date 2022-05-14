@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         REPOSITORY_CREDENTIAL_ID = 'all-knu-fcm-jenkins-github-key' // github repository credential name
-        REPOSITORY_URL = 'https://github.com/1sTeam/all-knu-fcm.git'
+        REPOSITORY_URL = 'git@github.com:1sTeam/all-knu-fcm.git'
         TARGET_BRANCH = 'main'
         IMAGE_NAME = 'all-knu-fcm'
         CONTAINER_NAME = 'all-knu-fcm'
@@ -16,9 +16,6 @@ pipeline {
         stage('init') {
             steps {
                 echo 'init stage'
-                sh '''
-                docker rm -f $CONTAINER_NAME
-                '''
                 deleteDir()
             }
             post {
@@ -85,6 +82,22 @@ pipeline {
                 }
             }
         }
+        stage('rm container') {
+                    steps {
+                        sh 'docker rm -f $CONTAINER_NAME'
+                    }
+
+                    post {
+                        success {
+                            echo 'success rm container all knu fcm'
+                            slackSend (channel: '#jenkins-notification', color: '#00FF00', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 성공")
+                        }
+                        failure {
+                            error 'fail rm container all knu fcm' // exit pipeline
+                            slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
+                        }
+                    }
+                }
         stage('deploy') {
             steps {
                 sh 'docker run --name $CONTAINER_NAME -e "SPRING_PROFILES_ACTIVE=$PROFILE" -m="900M" --net $DOCKER_NETWORK -d -t $IMAGE_NAME'
