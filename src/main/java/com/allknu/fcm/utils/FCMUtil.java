@@ -10,11 +10,64 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
 public class FCMUtil {
+
+    // 기본 설정을 해준 메시지 빌더 반환
+    private Message.Builder defaultMessageBuilder(String title, String body, String clickLink, ApnsPushType apnsPushType, ApnsPriority apnsPriority, AndroidPriority androidPriority) {
+        /* android 알림 설정 */
+        AndroidConfig.Builder androidConfigBuilder = AndroidConfig.builder();
+        // 안드로이드 우선순위 설정
+        if(androidPriority != null) {
+            androidConfigBuilder.setPriority(AndroidConfig.Priority.valueOf(androidPriority.getValue()));
+        } else androidConfigBuilder.setPriority(AndroidConfig.Priority.HIGH);
+        /* //////android 알림 설정 끝////// */
+
+        /* ios 알림 설정 */
+
+        if(apnsPushType == null) apnsPushType = ApnsPushType.BACKGROUND; // 디폴트 설정
+        // ios 푸시타입 및 content-available true 설정
+        ApnsConfig.Builder apnsConfigBuilder = ApnsConfig.builder()
+                .setAps(Aps.builder()
+                        .setContentAvailable(true)
+                        .build())
+                .putHeader("apns-push-type", apnsPushType.getValue());
+        // ios 우선순위 설정
+        if(apnsPriority != null) {
+            apnsConfigBuilder.putHeader("apns-priority", apnsPriority.getValue());
+        } else apnsConfigBuilder.putHeader("apns-priority", ApnsPriority.FIVE.getValue());
+
+        /* ///ios 알림 설정 끝///// */
+
+        /* data 설정 */
+        Map<String, String> data = new HashMap<>();
+        data.put("link", clickLink);
+
+        /* // data 설정 끝 // */
+
+        // See documentation on defining a message payload.
+        Message.Builder defaultMessageBuilder = Message.builder()
+                .setAndroidConfig(androidConfigBuilder.build())
+                .setApnsConfig(apnsConfigBuilder.build())
+                .putAllData(data)
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build())
+                .setWebpushConfig(WebpushConfig.builder()
+                        .setFcmOptions(WebpushFcmOptions.builder()
+                                .setLink(clickLink)
+                                .build())
+                        .build());
+
+        return defaultMessageBuilder;
+    }
+
     //unsubscribe from all topic
     public void unsubscribeFromAllTopics(List<String> tokens) {
         //해당 토큰들의 모든 구독을 취소한다.
@@ -51,43 +104,15 @@ public class FCMUtil {
         // This registration token comes from the client FCM SDKs.
         String registrationToken = targetToken;
 
-        // android 알림 설정
-        AndroidConfig.Builder androidConfigBuilder = AndroidConfig.builder();
-        // 안드로이드 우선순위 설정
-        if(androidPriority != null) {
-            androidConfigBuilder.setPriority(AndroidConfig.Priority.valueOf(androidPriority.getValue()));
-        } else androidConfigBuilder.setPriority(AndroidConfig.Priority.HIGH);
+        // 기본 메시지 빌더 불러오기
+        Message.Builder messageBuilder = defaultMessageBuilder(title, body, clickLink, apnsPushType, apnsPriority, androidPriority);
 
-        // ios 알림 설정
-        if(apnsPushType == null) apnsPushType = ApnsPushType.BACKGROUND; // 디폴트
-        // ios 푸시타입 설정
-        ApnsConfig.Builder apnsConfigBuilder = ApnsConfig.builder()
-                .setAps(Aps.builder().build())
-                .putHeader("apns-push-type", apnsPushType.getValue());
-        // ios 우선순위 설정
-        if(apnsPriority != null) {
-            apnsConfigBuilder.putHeader("apns-priority", apnsPriority.getValue());
-        } else apnsConfigBuilder.putHeader("apns-priority", ApnsPriority.FIVE.getValue());
-
-        // See documentation on defining a message payload.
-        Message message = Message.builder()
-                .setToken(registrationToken)
-                .setAndroidConfig(androidConfigBuilder.build())
-                .setApnsConfig(apnsConfigBuilder.build())
-                .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
-                .setWebpushConfig(WebpushConfig.builder()
-                        .setFcmOptions(WebpushFcmOptions.builder()
-                                .setLink(clickLink)
-                                .build())
-                        .build())
-                .build();
+        // 토큰 할당
+        messageBuilder.setToken(registrationToken);
 
         // Send a message to the device corresponding to the provided
         // registration token.
-        String response = FirebaseMessaging.getInstance().send(message);
+        String response = FirebaseMessaging.getInstance().send(messageBuilder.build());
         // Response is a message ID string.
         System.out.println("Successfully sent message: " + response);
         // [END send_to_token]
@@ -107,43 +132,15 @@ public class FCMUtil {
             conditionBuilder.append(" || '" + subscribeTypes.get(i).toString() + "' in topics");
         }
 
-        // android 알림 설정
-        AndroidConfig.Builder androidConfigBuilder = AndroidConfig.builder();
-        // 안드로이드 우선순위 설정
-        if(androidPriority != null) {
-            androidConfigBuilder.setPriority(AndroidConfig.Priority.valueOf(androidPriority.getValue()));
-        } else androidConfigBuilder.setPriority(AndroidConfig.Priority.HIGH);
+        // 기본 메시지 빌더 불러오기
+        Message.Builder messageBuilder = defaultMessageBuilder(title, body, clickLink, apnsPushType, apnsPriority, androidPriority);
 
-        // ios 알림 설정
-        if(apnsPushType == null) apnsPushType = ApnsPushType.BACKGROUND; // 디폴트
-        // ios 푸시타입 설정
-        ApnsConfig.Builder apnsConfigBuilder = ApnsConfig.builder()
-                .setAps(Aps.builder().build())
-                .putHeader("apns-push-type", apnsPushType.getValue());
-        // ios 우선순위 설정
-        if(apnsPriority != null) {
-            apnsConfigBuilder.putHeader("apns-priority", apnsPriority.getValue());
-        } else apnsConfigBuilder.putHeader("apns-priority", ApnsPriority.FIVE.getValue());
-
-        // See documentation on defining a message payload.
-        Message message = Message.builder()
-                .setAndroidConfig(androidConfigBuilder.build())
-                .setApnsConfig(apnsConfigBuilder.build())
-                .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
-                .setWebpushConfig(WebpushConfig.builder()
-                        .setFcmOptions(WebpushFcmOptions.builder()
-                                .setLink(clickLink)
-                                .build())
-                        .build())
-                .setCondition(conditionBuilder.toString())
-                .build();
+        // 토픽 할당
+        messageBuilder.setCondition(conditionBuilder.toString());
 
         // Send a message to devices subscribed to the combination of topics
         // specified by the provided condition.
-        String response = FirebaseMessaging.getInstance().send(message);
+        String response = FirebaseMessaging.getInstance().send(messageBuilder.build());
         // Response is a message ID string.
         System.out.println("Successfully sent message: " + response);
     }
