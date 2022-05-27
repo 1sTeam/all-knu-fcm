@@ -9,7 +9,7 @@ pipeline {
         TARGET_BRANCH = 'main'
         IMAGE_NAME = 'all-knu-fcm'
         CONTAINER_NAME = 'all-knu-fcm'
-        PROFILE = 'test'
+        PROFILE = 'prod'
 	DOCKER_NETWORK = 'all-knu-haproxy-net'
     }
     stages{
@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-	stage('create secret file by aws parameter store') {
+	stage('create secret file firebase sdk by aws parameter store') {
 		steps {
 			dir('src/main/resources/secrets/firebase'){
 				withAWSParameterStore(credentialsId: 'aws-all-knu',
@@ -66,6 +66,27 @@ pipeline {
 		}
 	   }
 	}
+    stage('create application-${env.PROFILE} properties by aws parameter store') {
+        steps {
+    	    dir('src/main/resources') {
+    		    withAWSParameterStore(credentialsId: 'aws-all-knu',
+                   	path: "/all-knu/properties/${env.PROFILE}",
+                   	naming: 'basename',
+                   	regionName: 'ap-northeast-2') {
+                   	    writeFile file: "application-${env.PROFILE}.yml", text: "${env.FCM}"
+                }
+    	    }
+        }
+    	post {
+            success {
+                echo 'success create secret file'
+            }
+            failure {
+                slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
+                error 'fail create secret file'
+            }
+    	}
+    }
 	stage('building by maven') {
 		steps{
 		 sh '''
