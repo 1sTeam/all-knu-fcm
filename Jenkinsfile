@@ -10,7 +10,7 @@ pipeline {
         IMAGE_NAME = 'all-knu-fcm'
         CONTAINER_NAME = 'all-knu-fcm'
         PROFILE = 'test'
-	DOCKER_NETWORK = 'haproxy-net'
+	DOCKER_NETWORK = 'all-knu-haproxy-net'
     }
     stages{
         stage('init') {
