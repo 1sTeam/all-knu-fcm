@@ -66,22 +66,38 @@ pipeline {
 		}
 	   }
 	}
-        stage('dockerizing by maven') {
-            steps {
-                sh '''
-                ./mvnw spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=$IMAGE_NAME
-                '''
+	stage('building by maven') {
+		steps{
+		 sh '''
+		 ./mvnw clean package -DskipTests
+		 '''
+		}
+		post {
+            success {
+                echo 'success build'
             }
-            post {
-                success {
-                    echo 'success dockerizing by maven'
-                }
-                failure {
-                    error 'fail dockerizing by maven' // exit pipeline
-                    slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
-                }
+            failure {
+                slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
+                error 'fail build'
             }
         }
+	}
+    stage('dockerizing by Dockerfile') {
+        steps {
+            sh '''
+            docker build -t $IMAGE_NAME .
+            '''
+        }
+        post {
+            success {
+               echo 'success dockerizing by Dockerfile'
+            }
+            failure {
+                slackSend (channel: '#jenkins-notification', color: '#FF0000', message: "${env.CONTAINER_NAME} CI / CD 파이프라인 구동 실패, 젠킨스 확인 해주세요")
+                error 'fail dockerizing by Dockerfile' // exit pipeline
+            }
+        }
+    }
         stage('rm container') {
                     steps {
                         sh 'docker rm -f $CONTAINER_NAME'
