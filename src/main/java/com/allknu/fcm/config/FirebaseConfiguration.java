@@ -19,7 +19,6 @@ public class FirebaseConfiguration {
     @PostConstruct
     public FirebaseApp initializeFCM() throws IOException {
         Resource resource = new ClassPathResource("secrets/firebase/all-knu-firebase-adminsdk.json");
-        FileInputStream fis = new FileInputStream(resource.getFile());
 
         List<FirebaseApp> apps = FirebaseApp.getApps();
         //FirebaseApp name [DEFAULT] already exists! 해결
@@ -31,7 +30,7 @@ public class FirebaseConfiguration {
             }
         } else {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(fis))
+                    .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
                     .build();
             firebaseApp = FirebaseApp.initializeApp(options);
         }
