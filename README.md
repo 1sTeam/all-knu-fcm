@@ -1,25 +1,25 @@
 # all-knu-fcm
 
-## maven run
-프로파일과 실행 포트 지정
-```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=local -Dspring-boot.run.jvmArguments='-Dserver.port=8081'
+## 기본 secret 환경 구성
+### resources/secrets/firebase/all-knu-firebase-adminsdk.json
+```json
+...
+```
+### resources/secrets/test-secrets.properties
+```properties
+fcm.token=..
 ```
 
-## maven build
+## gradle build
 ```bash
-./mvnw clean package
-```
-### option
-테스트 스킵
-```bash
--DskipTests
+./gradlew bootJar -x test
 ```
 
 ## docker build
-이미지 이름을 지정
+이미지 이름을 지정, java.security 이슈 때문에 지정된 자바 버전 사용..!
 ```bash
-./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=all-knu-fcm
+gradle build 후 진행
+docker build -t all-knu-fcm .
 ```
 
 ## docker run
@@ -30,5 +30,3 @@ docker run -e "SPRING_PROFILES_ACTIVE=local" -d -p 8080:8080 -t all-knu-fcm
 ### option
 - 컨테이너 이름 지정 `--name`
 - docker network 지정 `--net`
-
-![포스터 (2)](https://user-images.githubusercontent.com/35598710/146747200-db85fa02-699d-4654-9805-2802298c02d6.png)

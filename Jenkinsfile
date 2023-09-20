@@ -87,10 +87,10 @@ pipeline {
             }
     	}
     }
-	stage('building by maven') {
+	stage('building by gradle') {
 		steps{
 		 sh '''
-		 ./mvnw clean package -DskipTests
+		 ./gradlew bootJar -x test
 		 '''
 		}
 		post {
