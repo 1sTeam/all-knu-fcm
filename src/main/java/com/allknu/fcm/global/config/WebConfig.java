@@ -1,4 +1,4 @@
-package com.allknu.fcm.config;
+package com.allknu.fcm.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

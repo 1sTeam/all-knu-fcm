@@ -1,10 +1,12 @@
-package com.allknu.fcm.core.types;
+package com.allknu.fcm.domain;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * all-knu-backend의 SubscribeType과 동일해야한다.
  */
 @Getter
+@AllArgsConstructor
 public enum SubscribeType {
 
     ALL("전체(기본 구독 토픽)", "none"),
@@ -50,10 +52,6 @@ public enum SubscribeType {
     CONSTRUCTION("부동산건설학부", "major");
 
 
-    private String korean;
-    private String team; // department, major
-    SubscribeType(String korean, String team) {
-        this.korean = korean;
-        this.team = team;
-    }
+    private final String korean;
+    private final String team; // department, major
 }

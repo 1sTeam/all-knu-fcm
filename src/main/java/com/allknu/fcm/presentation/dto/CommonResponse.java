@@ -1,4 +1,4 @@
-package com.allknu.fcm.controller.dto;
+package com.allknu.fcm.presentation.dto;
 
 
 import lombok.Builder;
@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class CommonResponse {
+
     @Builder.Default // Builder default 지정
     private String id = UUID.randomUUID().toString(); // uuid
     @Builder.Default

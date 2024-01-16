@@ -1,8 +1,8 @@
-package com.allknu.fcm.config;
+package com.allknu.fcm.global.config;
 
-import com.allknu.fcm.kafka.dto.FCMMobileMessage;
-import com.allknu.fcm.kafka.dto.FCMSubscribeMessage;
-import com.allknu.fcm.kafka.dto.FCMWebMessage;
+import com.allknu.fcm.presentation.dto.FcmMobileMessage;
+import com.allknu.fcm.presentation.dto.FcmSubscribeMessage;
+import com.allknu.fcm.presentation.dto.FcmWebMessage;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -22,6 +22,7 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
+
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
     @Value("${spring.kafka.bootstrap-servers}")
@@ -45,9 +46,9 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, FCMWebMessage> FCMWebMessageConsumerFactory() {
+    public ConsumerFactory<String, FcmWebMessage> FCMWebMessageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        JsonDeserializer<FCMWebMessage> deserializer = new JsonDeserializer<>(FCMWebMessage.class);
+        JsonDeserializer<FcmWebMessage> deserializer = new JsonDeserializer<>(FcmWebMessage.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -64,29 +65,9 @@ public class KafkaConsumerConfig {
                 deserializer);
     }
     @Bean
-    public ConsumerFactory<String, FCMMobileMessage> FCMMobileMessageConsumerFactory() {
+    public ConsumerFactory<String, FcmMobileMessage> FCMMobileMessageConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        JsonDeserializer<FCMMobileMessage> deserializer = new JsonDeserializer<>(FCMMobileMessage.class);
-        deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(true);
-        //deserializer.addTrustedPackages("com.example.entity.Foo") // Adding Foo to our trusted packages
-
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(),
-                deserializer);
-    }
-
-    @Bean
-    public ConsumerFactory<String, FCMSubscribeMessage> FCMRequestSubscribeMessageConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        JsonDeserializer<FCMSubscribeMessage> deserializer = new JsonDeserializer<>(FCMSubscribeMessage.class);
+        JsonDeserializer<FcmMobileMessage> deserializer = new JsonDeserializer<>(FcmMobileMessage.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -104,21 +85,41 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> fcmWebMessageListener() {
-        ConcurrentKafkaListenerContainerFactory<String, FCMWebMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConsumerFactory<String, FcmSubscribeMessage> FCMRequestSubscribeMessageConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        JsonDeserializer<FcmSubscribeMessage> deserializer = new JsonDeserializer<>(FcmSubscribeMessage.class);
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.addTrustedPackages("*");
+        deserializer.setUseTypeMapperForKey(true);
+        //deserializer.addTrustedPackages("com.example.entity.Foo") // Adding Foo to our trusted packages
+
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        return new DefaultKafkaConsumerFactory<>(
+                props,
+                new StringDeserializer(),
+                deserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, FcmWebMessage> fcmWebMessageListener() {
+        ConcurrentKafkaListenerContainerFactory<String, FcmWebMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(FCMWebMessageConsumerFactory());
         return factory;
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, FCMMobileMessage> fcmMobileMessageListener() {
-        ConcurrentKafkaListenerContainerFactory<String, FCMMobileMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, FcmMobileMessage> fcmMobileMessageListener() {
+        ConcurrentKafkaListenerContainerFactory<String, FcmMobileMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(FCMMobileMessageConsumerFactory());
         return factory;
     }
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, FCMSubscribeMessage> fcmRequestSubscribeMessageListener() {
-        ConcurrentKafkaListenerContainerFactory<String, FCMSubscribeMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, FcmSubscribeMessage> fcmRequestSubscribeMessageListener() {
+        ConcurrentKafkaListenerContainerFactory<String, FcmSubscribeMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(FCMRequestSubscribeMessageConsumerFactory());
         return factory;
     }

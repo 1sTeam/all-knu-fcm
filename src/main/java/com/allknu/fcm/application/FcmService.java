@@ -1,13 +1,12 @@
-package com.allknu.fcm.utils;
+package com.allknu.fcm.application;
 
-import com.allknu.fcm.core.types.AndroidPriority;
-import com.allknu.fcm.core.types.ApnsPriority;
-import com.allknu.fcm.core.types.ApnsPushType;
-import com.allknu.fcm.core.types.SubscribeType;
-import com.allknu.fcm.kafka.dto.FCMWebMessage;
+import com.allknu.fcm.domain.AndroidPriority;
+import com.allknu.fcm.domain.ApnsPriority;
+import com.allknu.fcm.domain.ApnsPushType;
+import com.allknu.fcm.domain.SubscribeType;
 import com.google.firebase.messaging.*;
-import lombok.Getter;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -15,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 
-@Component
-public class FCMUtil {
+@Service
+public class FcmService {
 
     // 기본 설정을 해준 메시지 빌더 반환
     private Message.Builder defaultMessageBuilder(String title, String body, String clickLink, ApnsPushType apnsPushType, ApnsPriority apnsPriority, AndroidPriority androidPriority) {

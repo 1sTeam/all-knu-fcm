@@ -1,7 +1,7 @@
-package com.allknu.fcm.controller;
+package com.allknu.fcm.presentation;
 
 
-import com.allknu.fcm.controller.dto.CommonResponse;
+import com.allknu.fcm.presentation.dto.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

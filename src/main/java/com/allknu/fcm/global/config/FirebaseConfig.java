@@ -1,4 +1,4 @@
-package com.allknu.fcm.config;
+package com.allknu.fcm.global.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -8,12 +8,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
 @Configuration
-public class FirebaseConfiguration {
+public class FirebaseConfig {
+
     private FirebaseApp firebaseApp;
 
     @PostConstruct
