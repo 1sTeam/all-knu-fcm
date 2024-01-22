@@ -6,10 +6,10 @@ pipeline {
   environment {
     REPOSITORY_CREDENTIAL_ID = 'all-knu-fcm-jenkins-github-key' // github repository credential name
     REPOSITORY_URL = 'git@github.com:1sTeam/all-knu-fcm.git'
-    TARGET_BRANCH = 'main'
-    IMAGE_NAME = 'all-knu-fcm'
-    CONTAINER_NAME = 'all-knu-fcm'
-    PROFILE = 'prod'
+    TARGET_BRANCH = 'develop'
+    IMAGE_NAME = 'all-knu-fcm-develop'
+    CONTAINER_NAME = 'all-knu-fcm-develop'
+    PROFILE = 'develop'
     DOCKER_NETWORK = 'all-knu-haproxy-net'
   }
   stages {
