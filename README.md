@@ -16,7 +16,6 @@ fcm.token=..
 ```
 
 ## docker build
-이미지 이름을 지정, java.security 이슈 때문에 지정된 자바 버전 사용..!
 ```bash
 gradle build 후 진행
 docker build -t all-knu-fcm .
