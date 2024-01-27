@@ -1,4 +1,13 @@
-FROM openjdk:21-jdk
+FROM amazoncorretto:21.0.2-alpine AS Builder
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+RUN chmod +x ./gradlew
+RUN ./gradlew bootJar -x test
+
+FROM amazoncorretto:21.0.2-alpine
 ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY --from=builder ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
