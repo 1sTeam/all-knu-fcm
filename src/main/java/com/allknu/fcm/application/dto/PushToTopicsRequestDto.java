@@ -1,4 +1,4 @@
-package com.allknu.fcm.presentation.dto;
+package com.allknu.fcm.application.dto;
 
 import com.allknu.fcm.domain.AndroidPriority;
 import com.allknu.fcm.domain.ApnsPriority;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FcmMobileMessage {
+public class PushToTopicsRequestDto {
 
     private List<SubscribeType> subscribeTypes; //보내고자하는 구독 유형 리스트
     private String title;

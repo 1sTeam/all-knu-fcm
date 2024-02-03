@@ -1,4 +1,4 @@
-package com.allknu.fcm.presentation.dto;
+package com.allknu.fcm.application.dto;
 
 import com.allknu.fcm.domain.SubscribeType;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FcmSubscribeMessage {
+public class UpdateSubscribeTopicsRequestDto {
 
     private String token;
     private List<SubscribeType> subscribes;
