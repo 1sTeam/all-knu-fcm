@@ -1,6 +1,0 @@
-spring:
-  kafka:
-    bootstrap-servers: 3.38.64.244:9092
-    consumer:
-      group-id: all-knu-fcm
-      auto-offset-reset: latest

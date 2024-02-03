@@ -10,7 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://admin.all-knu.accongbox.com", "https://all-knu-admin.accongbox.com")
+                .allowedOrigins("https://admin.all-knu.accongbox.com",
+                        "http://localhost:3000",
+                        "http://localhost:5173",
+                        "https://all-knu-admin-dev.vercel.app")
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
