@@ -89,11 +89,9 @@ pipeline {
     }
     stage('dockerizing by Dockerfile') {
       steps {
-        sh ''
-        '
-        docker build - t $IMAGE_NAME.
-        ''
-        '
+        sh '''
+        docker build -t $IMAGE_NAME .
+        '''
       }
       post {
         success {
@@ -137,7 +135,5 @@ pipeline {
         }
       }
     }
-
   }
-
 }
